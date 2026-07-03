@@ -1,13 +1,16 @@
 services:
 
-  app:
-    build: .
+  backend:
+    build:
+      context: ./BACKEND
+      dockerfile: Dockerfile
+
     container_name: healthify_backend
 
     working_dir: /var/www
 
     volumes:
-      - ./:/var/www
+      - ./BACKEND:/var/www
 
     ports:
       - "8000:8000"
@@ -17,8 +20,26 @@ services:
 
     command: php artisan serve --host=0.0.0.0 --port=8000
 
+  web:
+    build:
+      context: ./WEB
+      dockerfile: Dockerfile
+
+    container_name: healthify_web
+
+    working_dir: /app
+
+    volumes:
+      - ./WEB:/app
+
+    ports:
+      - "5173:5173"
+
+    command: npm run dev -- --host
+
   mysql:
     image: mysql:8.0
+
     container_name: healthify_mysql
 
     restart: always
